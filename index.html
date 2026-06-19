@@ -998,7 +998,7 @@ function getPreview(day) {
 function buildPrayerHtml(day, person) {
   const prayer = PRAYERS[day];
   if (!prayer) {
-    return `<div class="no-prayer">${person} 선생님의 기도문이 아직 등록되지 않았습니다.<br>단톡방에 올라오면 추가해 주세요.</div>`;
+    return `<div class="no-prayer">${person} 선생님의 기도문이 아직 등록되지 않았습니다.<br>기도문을 추가해 주세요.</div>`;
   }
   let html = "";
   if (prayer.scripture) html += `<div class="scripture">${prayer.scripture.replace(/\n/g, "<br>")}</div>`;
