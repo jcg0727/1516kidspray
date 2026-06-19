@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>믿음의 항해 · 31일 릴레이 기도</title>
+  <style>
+    :root {
+      --sea-deep: #0c2d48;
+      --sea-mid: #145374;
+      --sea-light: #2e86ab;
+      --sky: #e8f4f8;
+      --sand: #f5e6c8;
+      --gold: #d4a853;
+      --gold-light: #f0d78c;
+      --white: #ffffff;
+      --text: #1a2a3a;
+      --text-muted: #5a7080;
+      --done: #2ecc71;
+      --today: #e67e22;
+      --shadow: 0 4px 24px rgba(12, 45, 72, 0.12);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background: linear-gradient(160deg, var(--sky) 0%, #c5dfe8 40%, var(--sand) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--sea-deep) 0%, var(--sea-mid) 60%, var(--sea-light) 100%);
+      color: var(--white);
+      padding: 2.5rem 1.5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60'%3E%3Cpath d='M0 30 Q150 0 300 30 T600 30 T900 30 T1200 30 V60 H0Z' fill='%23e8f4f8'/%3E%3C/svg%3E") repeat-x bottom;
+      background-size: 600px 60px;
+    }
+
+    header .anchor { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+    header h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin-top: 0.4rem;
+      opacity: 0.85;
+      font-size: 0.95rem;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      max-width: 720px;
+      margin: -1.5rem auto 0;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .progress-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .progress-label strong { color: var(--sea-mid); }
+
+    .progress-bar {
+      height: 10px;
+      background: #e0ecf2;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sea-light), var(--gold));
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+
+    /* ── View toggle ── */
+    .controls {
+      max-width: 960px;
+      margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .view-tabs {
+      display: flex;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 4px;
+      box-shadow: var(--shadow);
+    }
+
+    .view-tabs button {
+      border: none;
+      background: transparent;
+      padding: 0.5rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .view-tabs button.active {
+      background: var(--sea-mid);
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .legend {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .legend span { display: flex; align-items: center; gap: 0.35rem; }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.done { background: var(--done); }
+    .dot.today { background: var(--today); }
+    .dot.upcoming { background: #c8d8e0; }
+
+    /* ── Main content ── */
+    main {
+      max-width: 960px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Timeline view */
+    .timeline-view { display: flex; flex-direction: column; gap: 0; }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 72px 32px 1fr;
+      gap: 0 0.75rem;
+      transition: background 0.15s;
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .timeline-item.open { background: rgba(255,255,255,0.85); }
+
+    .timeline-date {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding-top: 0.6rem;
+    }
+
+    .timeline-date .day-num {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--sea-mid);
+    }
+
+    .timeline-rail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 0.75rem;
+    }
+
+    .timeline-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 3px solid #c8d8e0;
+      background: var(--white);
+      flex-shrink: 0;
+      z-index: 1;
+      transition: all 0.2s;
+    }
+
+    .timeline-item.done .timeline-dot {
+      border-color: var(--done);
+      background: var(--done);
+    }
+
+    .timeline-item.today .timeline-dot {
+      border-color: var(--today);
+      background: var(--today);
+      box-shadow: 0 0 0 4px rgba(230,126,34,0.25);
+    }
+
+    .timeline-line {
+      width: 3px;
+      flex: 1;
+      background: #d0e0e8;
+      min-height: 12px;
+    }
+
+    .timeline-item:last-child .timeline-line { display: none; }
+
+    .timeline-content { min-width: 0; }
+
+    .timeline-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      box-shadow: 0 2px 8px rgba(12,45,72,0.06);
+      margin-bottom: 0.5rem;
+      border-left: 4px solid transparent;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+
+    .timeline-card:hover { box-shadow: 0 4px 12px rgba(12,45,72,0.1); }
+
+    .timeline-item.done .timeline-card { border-left-color: var(--done); }
+    .timeline-item.today .timeline-card { border-left-color: var(--today); }
+    .timeline-item.open .timeline-card { border-left-color: var(--sea-light); }
+
+    .timeline-card .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .timeline-card .chevron {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+      transition: transform 0.25s ease;
+    }
+
+    .timeline-item.open .chevron { transform: rotate(180deg); }
+
+    .timeline-card .meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 99px;
+      background: var(--sky);
+      color: var(--sea-mid);
+    }
+
+    .badge.prayer { background: #e8f8ef; color: #1a7a42; }
+
+    .timeline-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .timeline-card .person {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-card .preview {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .timeline-item.open .preview { display: none; }
+
+    /* Accordion body */
+    .accordion-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s ease;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-item.open .accordion-body { grid-template-rows: 1fr; }
+
+    .accordion-inner {
+      overflow: hidden;
+      background: var(--white);
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 2px 8px rgba(12,45,72,0.06);
+      margin-top: -0.5rem;
+      border-top: 1px solid #e8f0f4;
+    }
+
+    .accordion-inner .prayer-content {
+      padding: 1.25rem 1rem 1rem;
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+
+    .accordion-inner .scripture {
+      background: var(--sky);
+      border-left: 4px solid var(--gold);
+      padding: 1rem 1.25rem;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 1rem;
+      font-style: italic;
+      color: var(--sea-deep);
+    }
+
+    .accordion-inner h4 {
+      color: var(--sea-mid);
+      margin: 1rem 0 0.4rem;
+      font-size: 0.88rem;
+    }
+
+    .accordion-inner .no-prayer {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+
+    /* Calendar view */
+    .calendar-view { display: none; }
+
+    .calendar-view.active { display: block; }
+
+    .cal-month {
+      margin-bottom: 1.5rem;
+    }
+
+    .cal-month h2 {
+      font-size: 1rem;
+      color: var(--sea-mid);
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-head {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      padding: 0.25rem;
+      font-weight: 600;
+    }
+
+    .cal-cell {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.5);
+      cursor: default;
+      position: relative;
+      min-height: 52px;
+    }
+
+    .cal-cell.empty { background: transparent; }
+
+    .cal-cell.relay {
+      background: var(--white);
+      box-shadow: 0 2px 6px rgba(12,45,72,0.07);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .cal-cell.relay:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(12,45,72,0.12);
+    }
+
+    .cal-cell.relay.done { background: #e8f8ef; }
+    .cal-cell.relay.today {
+      background: #fff3e6;
+      outline: 2px solid var(--today);
+      outline-offset: -2px;
+    }
+
+    .cal-cell .cal-day { font-weight: 700; font-size: 0.85rem; color: var(--sea-mid); }
+
+    .cal-cell .cal-name {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      padding: 0 2px;
+    }
+
+    .cal-cell .cal-num {
+      position: absolute;
+      top: 3px; right: 5px;
+      font-size: 0.58rem;
+      background: var(--sea-mid);
+      color: white;
+      border-radius: 99px;
+      width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+
+    /* Timeline view toggle */
+    .timeline-view.hidden { display: none; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      .timeline-item { grid-template-columns: 56px 24px 1fr; }
+      .legend { width: 100%; margin-left: 0; margin-top: 0.5rem; }
+      .cal-cell { min-height: 44px; }
+      .cal-cell .cal-name { font-size: 0.55rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="anchor">⚓</div>
+  <h1>영유아부 여름캠프 「믿음의 항해」</h1>
+  <p>31일 릴레이 기도 · 2026. 6. 10 — 7. 10</p>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-card">
+    <div class="progress-label">
+      <span>기도 항해 진행률</span>
+      <strong id="progressText">0 / 31일</strong>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="view-tabs">
+    <button class="active" data-view="timeline">📋 타임라인</button>
+    <button data-view="calendar">📅 달력</button>
+  </div>
+  <div class="legend">
+    <span><i class="dot done"></i> 기도 완료</span>
+    <span><i class="dot today"></i> 오늘</span>
+    <span><i class="dot upcoming"></i> 예정</span>
+  </div>
+</div>
+
+<main>
+  <div class="timeline-view" id="timelineView"></div>
+  <div class="calendar-view" id="calendarView"></div>
+</main>
+
+<footer>
+  영유아부 여름캠프 「믿음의 항해」 · 함께 기도하며 항해합니다 🌊
+</footer>
+
+<script>
+const SCHEDULE = [
+  { date: "2026-06-10", person: "이선영", day: 1 },
+  { date: "2026-06-11", person: "정혁진", day: 2 },
+  { date: "2026-06-12", person: "권영은", day: 3 },
+  { date: "2026-06-13", person: "문혜영", day: 4 },
+  { date: "2026-06-14", person: "황동건", day: 5 },
+  { date: "2026-06-15", person: "한아름", day: 6 },
+  { date: "2026-06-16", person: "이진실", day: 7 },
+  { date: "2026-06-17", person: "최진원", day: 8 },
+  { date: "2026-06-18", person: "서은진", day: 9 },
+  { date: "2026-06-19", person: "한지혜", day: 10 },
+  { date: "2026-06-20", person: "정창균", day: 11 },
+  { date: "2026-06-21", person: "이익현", day: 12 },
+  { date: "2026-06-22", person: "이은실", day: 13 },
+  { date: "2026-06-23", person: "박시온", day: 14 },
+  { date: "2026-06-24", person: "박채정", day: 15 },
+  { date: "2026-06-25", person: "강상욱", day: 16 },
+  { date: "2026-06-26", person: "안예진", day: 17 },
+  { date: "2026-06-27", person: "김대웅", day: 18 },
+  { date: "2026-06-28", person: "황호준", day: 19 },
+  { date: "2026-06-29", person: "이현주", day: 20 },
+  { date: "2026-06-30", person: "성동은", day: 21 },
+  { date: "2026-07-01", person: "조형민", day: 22 },
+  { date: "2026-07-02", person: "박대희", day: 23 },
+  { date: "2026-07-03", person: "박태인", day: 24 },
+  { date: "2026-07-04", person: "고승욱", day: 25 },
+  { date: "2026-07-05", person: "이아나", day: 26 },
+  { date: "2026-07-06", person: "주보라", day: 27 },
+  { date: "2026-07-07", person: "정혁진", day: 28 },
+  { date: "2026-07-08", person: "권영은", day: 29 },
+  { date: "2026-07-09", person: "황동건", day: 30 },
+  { date: "2026-07-10", person: "한지혜", day: 31 },
+];
+
+const PRAYERS = {
+  1: {
+    title: "항해의 시작 : 선장 되신 주님을 바라봅니다",
+    scripture: '"여호와가 이같이 말하노라 바다 가운데에 길을, 큰 물 가운데에 지름길을 내고"\n(이사야 43:16)',
+    body: `여름캠프를 앞두고 진행되는 30일 릴레이 기도의 첫날입니다.
+
+첫날은 캠프의 주권자이시자 항해의 선장이 되시는 하나님께 모든 일정을 맡겨드리는 것에 집중하여 기도합니다.
+
+<h4>1. 캠프의 방향과 준비를 위한 기도</h4>
+이번 영유아부 여름캠프 '믿음의 항해'의 모든 계획과 준비 과정 가운데 성령님께서 친히 선장이 되어 주시옵소서.
+
+프로그램을 기획하고 준비하는 교사들에게 지혜와 명철을 더하셔서, 인간의 생각이나 경험이 아닌 온전히 하나님의 뜻만이 세워지는 캠프가 되게 하옵소서.
+
+30일간 이어지는 릴레이 기도를 통해 기도의 돛을 높이 올리게 하시고, 모든 교사 공동체의 기도가 캠프를 이끄는 강력한 동력이 되게 하옵소서.
+
+그 동력은 사랑이 되게 하옵소서. 하나님사랑 이웃사랑을 보여주는 캠프가 되게하여 주옵소서!`
+  },
+  2: {
+    title: "'오직 사랑'으로 한 마음 한 뜻이 되는 영유아부 캠프 준비과정 되기를",
+    scripture: `[고린도전서 12장 31절, 13장 1~3절]
+
+31   너희는 더욱 큰 은사를 사모하라 내가 또한 가장 좋은 길을 너희에게 보이리라
+
+1   내가 사람의 방언과 천사의 말을 할지라도 사랑이 없으면 소리 나는 구리와 울리는 꽹과리가 되고
+2   내가 예언하는 능력이 있어 모든 비밀과 모든 지식을 알고 또 산을 옮길 만한 모든 믿음이 있을지라도 사랑이 없으면 내가 아무 것도 아니요
+3   내가 내게 있는 모든 것으로 구제하고 또 내 몸을 불사르게 내줄지라도 사랑이 없으면 내게 아무 유익이 없느니라`,
+    body: `하나님께서는 성령으로 말미암아 우리 각자에게 '은사'를 주셨으며, 은사는 개인의 유익이 아닌 타인을 위해, 공동체를 위해 쓰는 것이 유익하다고 말하고 있습니다.
+
+성령께서는 우리에게 다양한 은사를 주셨지만, 그에 앞서 우리에게 공통적으로 주신 은사인 '사랑'을 제일 사모해야 하며 각자의 은사는 사랑을 바탕으로 행해져야 함을 강조합니다. 모든 교사가 서로 사랑하고, 그 안에서 서로를 위해 은사를 발휘하며 한 마음 한 뜻이 되는 영유아부 캠프 준비과정이 되기를 기도합니다.
+
+<h4>기도제목</h4>
+영유아부 교사 모두가 서로 더욱 사랑하고, 우리의 입술이 서로를 더욱 세우는데 힘쓰게 하여 주옵소서.
+
+우리가 각자의 은사대로 최선을 다한다고 해도 서로를 사랑하는 마음 없이는 주님을 위한 하나의 뜻으로 이루어질 수 없음을 고백합니다. 주님, 굳어진 마음이 있다면 성령의 은혜로 녹여주시고 낙심하는 마음이 있다면 찾아가셔서 말씀하여 주옵소서.
+
+30일 릴레이 기도를 통해 함께 함이 기쁨이자 축복임을 깨닫게 하시고 하나의 마음으로 은혜되는 캠프의 준비과정이 될 수 있도록 인도하여 주옵소서.`
+  },
+  3: {
+    title: "합력하여 선을 이루는 캠프",
+    body: `영유아부 캠프가 벌써 네 번째입니다. 주님 매년 주의 은혜로 진행되었지만, 올해는 적은 인원의 교사들이 일찍부터 참여하여 많은 인원일 때보다 더 풍성한 준비과정이 되고 있어 감사합니다.
+
+하나님 우리 영유아부 캠프가 합력하여 선을 이루는 캠프 되기를 원합니다. 우리가 캠프를 통해 사랑을 흘려보내는 통로의 역할을 감당하기 원합니다. 나의 나 됨은 하나님의 은혜라고 고백했던 사도 바울의 고백처럼 우리의 우리됨은 하나님의 은혜이니 우리에게 주신 그 은혜가 결코 헛되지 아니했다고 하나님께서 생각하실 수 있는 그런 교사들이 되게 하여 주시옵소서.
+
+때로는 의견이 맞지 않을수도, 일이 진전이 더딜 수 있지만 그 과정에서 조급한 마음, 비난하는 마음이 아니라 오래참음과 사랑으로 그 일들을 묵묵히 해나갈 수 있는 힘을 주시옵소서. 어려움이 올 때에, '오호라 어려움아 예수그리스도의 이름으로 내가 이겨낼 것이다.'라고 말할 수 있는 영적으로 건강하고 굳건한 우리가 되게 하여 주시옵소서.
+
+이 릴레이 기도가 각자의 교사들의 삶 가운데 하나님을 조금 더 생각하고, 하나님과 대화 하는 기회가 되기를 바랍니다.
+
+주님 이 가운데 우리의 영의 눈을 뜨게 하여 주시옵소서.
+
+감사합니다.
+누구보다 우리를 사랑하신, 그래서 죽음도 마다하지 않은 그 예수님
+예수님의 이름으로 기도합니다`
+  },
+  4: {
+    title: "예수님과 함께하는 배",
+    scripture: `하루는 제자들과 함께 배에 오르사 그들에게 이르시되 호수 저편으로 건너가자 하시매 이에 떠나
+(누가복음 8:22)`,
+    body: `사랑하는 주님
+여름 캠프를 위해 기도로 준비하게 하심에 감사합니다.
+육아에 지친 몸과 분주한 마음을 주님 앞에 부끄럽게 내어드립니다.
+이런 연약한 모습을 안아주시며 주님의 그늘 아래 쉼을 주시니 감사합니다.
+평안 가운데 말씀을 묵상해 봅니다.
+
+우리가 준비하고 있는 여름 캠프 믿음의 배에는 예수님도 함께 탑승하셨습니다.
+4주 정도 남은 시간 동안 많은 일들이 있겠지만 그 과정에서 이 캠프의 주인이신 예수님께서 함께 하심을 기억하며 나아가길 원합니다.
+
+우리의 경험과 지혜를 의지하지 않고 사역의 시작과 마지막을 기도로 마치며 온전히 우리의 향해자이신 예수님만 바라보게 해 주세요.
+
+또 호수 저편으로 건너가자라고 정확하게 말씀해 주셨습니다. 사역 준비하는 과정마다 늘 예수님이 말씀하신 방향이 맞는지 점검하는 은혜를 더하여 주세요.
+
+캠프에 함께하는 모든 아이들 영혼육 가운데 캠프에서 선포되는 말씀이 하나도 빠짐없이 심기고 열매 맺기를 기도합니다.
+
+훗날 인생 수많은 여정 가운데 풍랑 속에서도 잔잔한 파도에도 늘 나와 함께 하시는 예수님을 볼 수 있기를, 또 호수 저편으로 건너가자 하신 부르신 사명을 향해 갈 수 있기를.
+
+예수님의 이름으로 기도합니다. 아멘`
+  },
+  5: {
+    title: "믿음의 회복과 치유",
+    scripture: `[눅8:48] 예수께서 이르시되 딸아 네 믿음이 너를 구원하였으니 평안히 가라 하시더라
+
+[눅8:50] 예수께서 들으시고 이르시되 두려워하지 말고 믿기만 하라 그리하면 딸이 구원을 얻으리라 하시고`,
+    body: `우리 몸된 교회의 머리 되신 주님, 주님께서 이번 여름캠프에 주신 말씀을 붙들고 오늘도 기도의 자리로 나아갑니다.
+
+캠프를 준비하는 우리 모두와 그리고 캠프에 참여하는 모든 가정마다, 이번 여름캠프를 통해 우리들의 삶 가운데 함께하시는 예수님을 바라 보는 시선과 온전한 믿음이 회복될 수 있기를 소망합니다.
+
+그리하여 각 가정에서 겪고 있는 크고 작은 문제와 어려움들을 이겨내는 간증이 넘쳐나길, 하나님께 감사와 찬양과 영광 올려드리길 간절히 소망합니다.
+
+광풍을 잠잠케 하시고, 귀신을 쫓아내시고, 난치병을 치료하시고, 죽음까지도 살려내셨던, 이번 주제 말씀을 통해 보여주시는 하나님의 놀라우신 치유와 회복의 은혜로 영유아부 공동체를 덮어 주시기를 간절히 소망합니다.
+
+또한, 캠프를 준비하는 모든 교사와 리더십, 그리고 캠프에 참가하는 모든 부모와 자녀들이 남은 시간들을 통해서 올해 주제 말씀과 같은 믿음의 역사가 우리들의 삶 가운데도 일어날 것을 더욱 간절히 기대하고 소망히고 갈망하는 마음이 계속해서 커져가고 충만하기를.
+
+그 갈급하고 가난한 심령으로 주님께 나아가는 우리 모두가 되게 하여 주옵소서.
+
+감사드리며, 예수님의 이름으로 기도합니다. 아멘 🙏🏻`
+  },
+  6: {
+    title: "은혜를 위해, 사랑을 위해",
+    body: `어느 때보다도 합심하여 나가는 우리 선생님들! 주님안에 하나 되어 가게 하시니 감사합니다~👍🏻
+
+모든 과정 가운데, 모든 시간 가운데, 모든 대화 가운데, 모든 관계 가운데 하나님의 은혜로 함께 하여지길 소망합니다.🙏🏻
+
+지치지 않는 체력도 주시고, 아이들에게 말씀을 몸으로 배우게 하는 지혜도 주시고, 넉넉한 캠프가 될 수 있도록 재정도 주시고, 교사들과 부모들에게도 준비한 것들을 함께 즐길 수 있는 여유를 주시고, 모든 과정을 즐겁게 여길 수 있는 마음의 여유도 주시길 원합니다.😆
+
+이 모든 것들은 오직 주님의 말씀을 위해, 은혜를 위해, 사랑을 위해, 영광을 위해 준비하는 것이니 기쁘게 받아주실 줄 믿습니다.🙂
+
+'oooo주세요' 하는 기도가 어색하지만..🫣 캠프때는 한 번 졸라 볼게요.... 어차피 주실꺼.. 흘러 넘치게, 시원하게 부어주세요!!!🌊🌊🌊🌊🌊
+
+🛤 축복의 통로🛤가 되고 있는 선생님들 가정과 목사님 가정에도 맘껏 부어주실 줄 믿사오며~
+우리를 너무나도 사랑하시는 예수님의 이름으로 기도합니다. (사랑)(사랑)(사랑)`
+  },
+  7: {
+    title: "예배자의 모습으로 준비하기",
+    body: `우리의 사랑이 부족할때, 우리의 힘이 모자랄때 하나님의 사랑으로 더 사랑하고, 더 하나님을 의지하게 도와주세요🙏🏻
+
+하나님, 한달도 남지 않은 캠프를 앞두고 마음의 분주함이 있습니다. 그럴때 사람의 조바심을 내려놓고 하나님을 바라 볼 수 있도록 우리교사들의 마음을 지켜주세요. 캠프는 우리의 잘 됨을, 멋짐을 드러내는 것이 아니라 우리의 열심을 통해 하나님의 말씀이 선포되는 귀한 자리임을 믿습니다. 이번 캠프를 통하여 우리아이들과 가정이 변화되고, 하나님과 더 가까워 지는 시간이 될 수 있도록 인도해 주세요.
+
+준비하는 손길손길 하나하나에 하나님의 은혜를 구하며, 우리 선생님들이 일이 아닌 예배자의 모습으로 캠프를 준비 할 수 있도록 인도해 주세요. 함께 사역하시는 목사님께도 하나님께서 함께 하셔서 말씀을 준비 하시고, 캠프를 준비하는 모든 상황안에 하나님이 주시는 은혜가 넘치길 원합니다🥰`
+  },
+  8: {
+    title: "기도로 간구하며 믿음으로 담대히",
+    body: `하나님 아버지 여름 캠프 가운데 드려질 예배를 기쁘게 받아주시길 기도합니다.
+
+감사하며 여름 캠프를 하나되어 준비하고 오직 주님의 영광을 위해 힘쓰길 원합니다. 나의 힘과 능력 계획이 아니라 오직 주님께 기도로 간구하고 의지하며 믿음으로 담대히 나아가길 원합니다.
+
+캠프 가운데 아이들과 우리 부모님들, 교사들 모두 두려움 속에서 예수님을 찾을 수 있는 믿음과 지혜를 주시고 나를 변화시키는 예수님을 믿고 생명의 주인이신 예수님만 의지하는 믿음을 주세요.
+
+예수님의 이름으로 기도합니다. 아멘`
+  },
+  9: {
+    title: "복음의 빚을 갚는 나눔과 협력",
+    scripture: `[고전 16:1-12]
+
+16:1 성도를 위하여 연보에 관하여는 내가 갈라디아 교회들에게 명한 것같이 너희도 그렇게 하라
+
+바울은 예루살렘 교회에 보낼 연보를 미리 준비하라고 고린도 성도들에게 권합니다. 그 연보룰 보낼 때 자신도 가는 것이 합당하다면 가겠다고 합니다.`,
+    body: `주님!!
+
+복음을 전하는 일은 한사람의 사역이 아니라 여러 사람들이 모여 함께 이루어 가는 일임을 깨닫습니다. 우리가 서 있는 자리에서 눈을 들어 하나님의 마음으로 바라보게 하시고 빈자리, 어려운 자리를 서로 먼저 채워나가는 믿음의 공동체가 되게 하옵소서.
+
+우리 선생님들이 성령님의 인도하심을 따라 매 순간 주님의 임재와 기름부으심을 경험하게 하옵소서. 그 은혜의 기름부으심이 영유아부 각 가정과 아이들에게 사랑과 용기 감사의 열매로 자연스럽게 흘러갈 수 있도록 우리 선생님들의 심령을 온전히 주관하여 주옵소서.
+
+각자의 자리에서 기도와 섬김으로 캠프를 준비하는 모든 선생님들을 축복하여 주옵소서. 질병과 경제적 어려움 관계의 아픔 등 삶의 여러 무거움 속에 있는 가정들을 긍휼히 여기사 하나님의 온전한 위로와 평안을 채우시고 이 고난의 터널을 넉넉히 통과 할 수 있도록 새 힘과 용기를 날마다 공급하여 주옵소서.
+
+캠프를 기대합니다. 하나님을 기대합니다.
+
+우리 인생의 배를 운전하시고 함께하시는 선장되신 예수님의 이름으로 기도합니다. 아멘!`
+  }
+};
+
+const TODAY = new Date();
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + "T00:00:00");
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  const weekdays = ["일","월","화","수","목","금","토"];
+  return { month, day, weekday: weekdays[d.getDay()], label: `${month}/${day} (${weekdays[d.getDay()]})` };
+}
+
+function getStatus(item) {
+  const d = new Date(item.date + "T00:00:00");
+  const todayStart = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+  if (d < todayStart) return "done";
+  if (d.getTime() === todayStart.getTime()) return "today";
+  return "upcoming";
+}
+
+function getPreview(day) {
+  const p = PRAYERS[day];
+  if (!p) return "기도문이 아직 등록되지 않았습니다.";
+  const text = (p.title || "") + " " + (p.body || "").replace(/<[^>]+>/g, "");
+  return text.slice(0, 80) + (text.length > 80 ? "…" : "");
+}
+
+function buildPrayerHtml(day, person) {
+  const prayer = PRAYERS[day];
+  if (!prayer) {
+    return `<div class="no-prayer">${person} 선생님의 기도문이 아직 등록되지 않았습니다.<br>단톡방에 올라오면 추가해 주세요.</div>`;
+  }
+  let html = "";
+  if (prayer.scripture) html += `<div class="scripture">${prayer.scripture.replace(/\n/g, "<br>")}</div>`;
+  html += `<div>${prayer.body.replace(/\n/g, "<br>")}</div>`;
+  return html;
+}
+
+function renderTimeline() {
+  const el = document.getElementById("timelineView");
+  el.innerHTML = SCHEDULE.map(item => {
+    const { month, day, weekday } = formatDate(item.date);
+    const status = getStatus(item);
+    const hasPrayer = !!PRAYERS[item.day];
+    return `
+      <div class="timeline-item ${status}" data-day="${item.day}" id="day-${item.day}">
+        <div class="timeline-date">
+          <span class="day-num">${month}/${day}</span>
+          ${weekday}
+        </div>
+        <div class="timeline-rail">
+          <div class="timeline-dot"></div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-card" onclick="toggleDetail(${item.day})">
+            <div class="card-header">
+              <div>
+                <div class="meta">
+                  <span class="badge">${item.day}일차</span>
+                  ${hasPrayer ? '<span class="badge prayer">기도문 ✓</span>' : ''}
+                </div>
+                <h3>${PRAYERS[item.day]?.title || "릴레이 기도"}</h3>
+                <div class="person">🙏 ${item.person}</div>
+                <div class="preview">${getPreview(item.day)}</div>
+              </div>
+              <span class="chevron">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <div class="accordion-inner">
+              <div class="prayer-content">${buildPrayerHtml(item.day, item.person)}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function renderCalendar() {
+  const el = document.getElementById("calendarView");
+  const months = [
+    { year: 2026, month: 6, label: "2026년 6월" },
+    { year: 2026, month: 7, label: "2026년 7월" },
+  ];
+
+  el.innerHTML = months.map(({ year, month, label }) => {
+    const firstDay = new Date(year, month - 1, 1).getDay();
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const scheduleMap = {};
+    SCHEDULE.forEach(s => {
+      const d = new Date(s.date + "T00:00:00");
+      if (d.getFullYear() === year && d.getMonth() + 1 === month) {
+        scheduleMap[d.getDate()] = s;
+      }
+    });
+
+    let cells = "";
+    for (let i = 0; i < firstDay; i++) cells += `<div class="cal-cell empty"></div>`;
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const s = scheduleMap[d];
+      if (s) {
+        const status = getStatus(s);
+        const hasPrayer = !!PRAYERS[s.day];
+        cells += `
+          <div class="cal-cell relay ${status}" onclick="openFromCalendar(${s.day})" title="${s.day}일차 · ${s.person}">
+            <span class="cal-num">${s.day}</span>
+            <span class="cal-day">${d}</span>
+            <span class="cal-name">${s.person}</span>
+          </div>`;
+      } else {
+        cells += `<div class="cal-cell"><span class="cal-day" style="color:#bbb">${d}</span></div>`;
+      }
+    }
+
+    return `
+      <div class="cal-month">
+        <h2>${label}</h2>
+        <div class="cal-grid">
+          ${["일","월","화","수","목","금","토"].map(w => `<div class="cal-head">${w}</div>`).join("")}
+          ${cells}
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function toggleDetail(day, scroll = false) {
+  const item = document.getElementById(`day-${day}`);
+  if (!item) return;
+
+  const isOpen = item.classList.contains("open");
+
+  document.querySelectorAll(".timeline-item.open").forEach(el => el.classList.remove("open"));
+
+  if (!isOpen) {
+    item.classList.add("open");
+    if (scroll) {
+      item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }
+}
+
+function openFromCalendar(day) {
+  document.querySelectorAll(".view-tabs button").forEach(b => {
+    b.classList.toggle("active", b.dataset.view === "timeline");
+  });
+  document.getElementById("timelineView").classList.remove("hidden");
+  document.getElementById("calendarView").classList.remove("active");
+  toggleDetail(day, true);
+}
+
+function updateProgress() {
+  const total = SCHEDULE.length;
+  const done = SCHEDULE.filter(s => getStatus(s) === "done" || getStatus(s) === "today").length;
+  document.getElementById("progressText").textContent = `${done} / ${total}일`;
+  document.getElementById("progressFill").style.width = `${(done / total) * 100}%`;
+}
+
+// View tabs
+document.querySelectorAll(".view-tabs button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".view-tabs button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const view = btn.dataset.view;
+    document.getElementById("timelineView").classList.toggle("hidden", view !== "timeline");
+    document.getElementById("calendarView").classList.toggle("active", view === "calendar");
+  });
+});
+
+renderTimeline();
+renderCalendar();
+updateProgress();
+
+const todayItem = SCHEDULE.find(s => getStatus(s) === "today");
+if (todayItem) {
+  setTimeout(() => toggleDetail(todayItem.day, true), 300);
+}
+</script>
+
+</body>
+</html>
