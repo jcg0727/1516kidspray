@@ -32,6 +32,195 @@
       line-height: 1.7;
     }
 
+    body.locked { overflow: hidden; }
+
+    /* ── Login gate ── */
+    .login-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: linear-gradient(160deg, var(--sea-deep) 0%, var(--sea-mid) 45%, var(--sea-light) 100%);
+    }
+
+    .login-gate.hidden { display: none; }
+
+    .login-gate::before {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0 60 Q200 20 400 60 T800 60 T1200 60 V120 H0Z' fill='%23e8f4f8' fill-opacity='0.15'/%3E%3Cpath d='M0 80 Q150 50 300 80 T600 80 T900 80 T1200 80 V120 H0Z' fill='%23e8f4f8' fill-opacity='0.1'/%3E%3C/svg%3E") repeat-x bottom;
+      background-size: 600px 120px;
+      animation: waveDrift 8s linear infinite;
+    }
+
+    @keyframes waveDrift {
+      from { background-position-x: 0; }
+      to { background-position-x: 600px; }
+    }
+
+    .login-card {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: loginFadeIn 0.5s ease;
+    }
+
+    @keyframes loginFadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .login-card-header {
+      background: linear-gradient(135deg, var(--sea-deep), var(--sea-mid));
+      color: var(--white);
+      text-align: center;
+      padding: 2rem 1.5rem 1.75rem;
+    }
+
+    .login-card-header .login-anchor {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .login-card-header h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .login-card-header p {
+      margin-top: 0.35rem;
+      font-size: 0.82rem;
+      opacity: 0.8;
+    }
+
+    .login-card-body {
+      padding: 1.75rem 1.5rem 1.5rem;
+    }
+
+    .login-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--sea-mid);
+      margin-bottom: 0.5rem;
+    }
+
+    .login-input-wrap {
+      position: relative;
+    }
+
+    .login-input-wrap .input-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.95rem;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.5rem;
+      border: 2px solid #e0ecf2;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .login-input:focus {
+      border-color: var(--sea-light);
+      box-shadow: 0 0 0 4px rgba(46, 134, 171, 0.15);
+    }
+
+    .login-input.error {
+      border-color: #e74c3c;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .login-error {
+      display: none;
+      margin-top: 0.6rem;
+      font-size: 0.82rem;
+      color: #e74c3c;
+      text-align: center;
+    }
+
+    .login-error.show { display: block; }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--sea-mid), var(--sea-light));
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 14px rgba(20, 83, 116, 0.35);
+    }
+
+    .login-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(20, 83, 116, 0.4);
+    }
+
+    .login-btn:active { transform: translateY(0); }
+
+    .login-hint {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .app-root.hidden { display: none; }
+
+    .logout-btn {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 100;
+      padding: 0.45rem 0.85rem;
+      border: none;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: color 0.15s;
+    }
+
+    .logout-btn:hover { color: var(--sea-mid); }
+
+    .hidden { display: none !important; }
+
     /* ── Header ── */
     header {
       background: linear-gradient(135deg, var(--sea-deep) 0%, var(--sea-mid) 60%, var(--sea-light) 100%);
@@ -467,7 +656,37 @@
     }
   </style>
 </head>
-<body>
+<body class="locked">
+
+<div class="login-gate" id="loginGate">
+  <div class="login-card">
+    <div class="login-card-header">
+      <span class="login-anchor">⚓</span>
+      <h2>믿음의 항해</h2>
+      <p>영유아부 31일 릴레이 기도</p>
+    </div>
+    <div class="login-card-body">
+      <form id="loginForm" autocomplete="off">
+        <label class="login-label" for="loginPassword">비밀번호</label>
+        <div class="login-input-wrap">
+          <span class="input-icon">🔑</span>
+          <input
+            type="password"
+            id="loginPassword"
+            class="login-input"
+            placeholder="비밀번호를 입력하세요"
+            autocomplete="off"
+          >
+        </div>
+        <p class="login-error" id="loginError">비밀번호가 올바르지 않습니다.</p>
+        <button type="submit" class="login-btn">기도 항해 시작 🌊</button>
+      </form>
+      <p class="login-hint">영유아부 교사에게 문의하세요</p>
+    </div>
+  </div>
+</div>
+
+<div class="app-root hidden" id="appRoot">
 
 <header>
   <div class="anchor">⚓</div>
@@ -507,6 +726,67 @@
 <footer>
   영유아부 여름캠프 「믿음의 항해」 · 함께 기도하며 항해합니다 🌊
 </footer>
+
+<button class="logout-btn hidden" id="logoutBtn" type="button">로그아웃</button>
+
+</div><!-- /app-root -->
+
+<script>
+const AUTH_KEY = "1516kidscamp_auth";
+const PASSWORD = "1516";
+
+function isAuthenticated() {
+  return sessionStorage.getItem(AUTH_KEY) === "1";
+}
+
+function showApp() {
+  document.getElementById("loginGate").classList.add("hidden");
+  document.getElementById("appRoot").classList.remove("hidden");
+  document.getElementById("logoutBtn").classList.remove("hidden");
+  document.body.classList.remove("locked");
+  initApp();
+}
+
+function showLogin() {
+  document.getElementById("loginGate").classList.remove("hidden");
+  document.getElementById("appRoot").classList.add("hidden");
+  document.getElementById("logoutBtn").classList.add("hidden");
+  document.body.classList.add("locked");
+  sessionStorage.removeItem(AUTH_KEY);
+}
+
+function tryLogin(password) {
+  if (password === PASSWORD) {
+    sessionStorage.setItem(AUTH_KEY, "1");
+    showApp();
+    return true;
+  }
+  return false;
+}
+
+document.getElementById("loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const input = document.getElementById("loginPassword");
+  const error = document.getElementById("loginError");
+  if (tryLogin(input.value)) {
+    error.classList.remove("show");
+    input.classList.remove("error");
+  } else {
+    error.classList.add("show");
+    input.classList.add("error");
+    input.value = "";
+    input.focus();
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", showLogin);
+
+if (isAuthenticated()) {
+  showApp();
+} else {
+  document.getElementById("loginPassword").focus();
+}
+</script>
 
 <script>
 const SCHEDULE = [
@@ -860,13 +1140,15 @@ document.querySelectorAll(".view-tabs button").forEach(btn => {
   });
 });
 
-renderTimeline();
-renderCalendar();
-updateProgress();
+function initApp() {
+  renderTimeline();
+  renderCalendar();
+  updateProgress();
 
-const todayItem = SCHEDULE.find(s => getStatus(s) === "today");
-if (todayItem) {
-  setTimeout(() => toggleDetail(todayItem.day, true), 300);
+  const todayItem = SCHEDULE.find(s => getStatus(s) === "today");
+  if (todayItem) {
+    setTimeout(() => toggleDetail(todayItem.day, true), 300);
+  }
 }
 </script>
 
