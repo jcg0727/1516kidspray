@@ -781,9 +781,7 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
 
 document.getElementById("logoutBtn").addEventListener("click", showLogin);
 
-if (isAuthenticated()) {
-  showApp();
-} else {
+if (!isAuthenticated()) {
   document.getElementById("loginPassword").focus();
 }
 </script>
@@ -1149,6 +1147,10 @@ function initApp() {
   if (todayItem) {
     setTimeout(() => toggleDetail(todayItem.day, true), 300);
   }
+}
+
+if (isAuthenticated()) {
+  showApp();
 }
 </script>
 
